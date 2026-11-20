@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+const cors = require("cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
@@ -12,6 +13,15 @@ const recipeRouter = require("./routes/recipeRoutes");
 const userRouter = require("./routes/userRoutes");
 
 const app = express();
+
+// CORS
+app.use(
+  cors({
+    origin: ["http://localhost:3001", "https://recipad-front-domain.com"],
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 // GLOBAL MIDDLEWARES
 // Security HTTP headers

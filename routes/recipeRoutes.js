@@ -1,6 +1,7 @@
 const express = require("express");
 const recipeController = require("../controllers/recipeController");
 const authController = require("../controllers/authController");
+const upload = require("../middlewares/uploadImage");
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.use(authController.protect);
 router
   .route("/")
   .get(recipeController.getAllRecipes)
-  .post(recipeController.createRecipe);
+  .post(upload.single("imageCover"), recipeController.createRecipe);
 
 router
   .route("/:id")

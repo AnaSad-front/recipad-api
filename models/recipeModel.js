@@ -24,8 +24,8 @@ const recipeSchema = new mongoose.Schema({
   },
   slug: String,
   imageCover: {
-    type: String,
-    default: "defaultRecipe.png",
+    url: { type: String },
+    publicId: { type: String },
   },
   category: {
     type: String,

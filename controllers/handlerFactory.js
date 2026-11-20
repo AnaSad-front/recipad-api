@@ -3,17 +3,32 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const APIFeatures = require("../utils/apiFeatures");
 
-exports.createOne = (Model) =>
+exports.createOne = (Model, options = {}) =>
   catchAsync(async (req, res, next) => {
     req.body.user = req.user.id;
-    const doc = await Model.create(req.body);
 
-    res.status(201).json({
-      status: "success",
-      data: {
-        data: doc,
-      },
-    });
+    let uploadedImage;
+
+    try {
+      if (options.beforeCreate) {
+        uploadedImage = await options.beforeCreate(req);
+      }
+
+      const doc = await Model.create(req.body);
+
+      res.status(201).json({
+        status: "success",
+        data: {
+          data: doc,
+        },
+      });
+    } catch (err) {
+      if (uploadedImage?.publicId) {
+        await options.cleanup?.(uploadedImage.publicId);
+      }
+
+      throw err;
+    }
   });
 
 exports.getAll = (Model, filterFn = () => ({})) =>
